@@ -47,6 +47,20 @@
         @enderror
         <small class="text-muted">Masukkan angka dalam Rupiah tanpa tanda titik atau simbol Rp.</small>
     </div>
+
+    <div class="col-md-6">
+        <label class="form-label">Jabatan</label>
+        @php $jabatanList = $jabatan ?? collect(); @endphp
+        <select name="id_jabatan" class="form-select @error('id_jabatan') is-invalid @enderror">
+            <option value="">-- Pilih Jabatan --</option>
+            @foreach($jabatanList as $j)
+                <option value="{{ $j->id_jabatan }}" @selected(old('id_jabatan', $employeeSalary->id_jabatan ?? '') == $j->id_jabatan)>{{ $j->nama_jabatan }}</option>
+            @endforeach
+        </select>
+        @error('id_jabatan')
+            <div class="invalid-feedback">{{ $message }}</div>
+        @enderror
+    </div>
 </div>
 
 <div class="d-flex justify-content-end gap-2 mt-4">

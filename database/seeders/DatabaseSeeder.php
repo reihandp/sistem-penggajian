@@ -22,6 +22,8 @@ class DatabaseSeeder extends Seeder
             'email' => 'test@example.com',
         ]);
 
+        // Seed jabatan first so FK references exist
+        $this->call(JabatanSeeder::class);
         $this->call(EmployeeSalarySeeder::class);
     }
 }

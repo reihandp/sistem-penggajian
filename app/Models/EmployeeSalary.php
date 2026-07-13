@@ -6,8 +6,15 @@ use Illuminate\Database\Eloquent\Model;
 
 class EmployeeSalary extends Model
 {
-    protected $table = 'gaji_karyawan_indonesia';
-
+    protected $table = 'gaji_karyawan_indonesia_updated';
     // Mengizinkan kolom-kolom diisi secara massal
-    protected $fillable = ['nama', 'pengalaman_kerja_tahun', 'usia', 'jenis_kelamin', 'gaji_per_bulan_rp'];
+    protected $fillable = ['id', 'nama', 'pengalaman_kerja_tahun', 'usia', 'jenis_kelamin', 'gaji_per_bulan_rp', 'id_jabatan'];
+
+    public $incrementing = true;
+    protected $keyType = 'int';
+
+    public function jabatan()
+    {
+        return $this->belongsTo(Jabatan::class, 'id_jabatan', 'id_jabatan');
+    }
 }

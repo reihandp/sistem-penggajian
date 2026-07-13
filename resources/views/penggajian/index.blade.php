@@ -52,6 +52,7 @@
                             <th>Pengalaman</th>
                             <th>Usia</th>
                             <th>Jenis Kelamin</th>
+                            <th>Jabatan</th>
                             <th>Gaji Per Bulan</th>
                             <th class="text-end pe-4">Aksi</th>
                         </tr>
@@ -69,6 +70,9 @@
                                         {{ $item->jenis_kelamin }}
                                     </span>
                                 </td>
+                                <td>
+                                    {{ optional($item->jabatan)->nama_jabatan ?? '-' }}
+                                </td>
                                 <td class="fw-semibold">Rp {{ number_format($item->gaji_per_bulan_rp, 0, ',', '.') }}</td>
                                 <td class="text-end pe-4">
                                     <a href="{{ url('/penggajian/' . $item->id . '/edit') }}" class="btn btn-outline-secondary btn-sm py-1 px-2">Edit</a>
@@ -81,7 +85,7 @@
                             </tr>
                         @empty
                             <tr>
-                                <td colspan="8" class="text-center text-muted py-5">Belum ada data gaji.</td>
+                                <td colspan="9" class="text-center text-muted py-5">Belum ada data gaji.</td>
                             </tr>
                         @endforelse
                     </tbody>

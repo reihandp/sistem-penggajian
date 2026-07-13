@@ -3,6 +3,7 @@
 namespace App\Http\Controllers;
 
 use App\Models\EmployeeSalary;
+use App\Models\Jabatan;
 use Illuminate\Http\Request;
 use Illuminate\Http\RedirectResponse;
 use Illuminate\View\View;
@@ -19,6 +20,7 @@ class EmployeeSalaryController extends Controller
         $salaries = EmployeeSalary::when($search, function ($query, $search) {
             $query->where('nama', 'like', $search . '%');
         })
+            ->with('jabatan')
             ->latest()
             ->paginate(10)
             ->withQueryString();
@@ -31,7 +33,8 @@ class EmployeeSalaryController extends Controller
      */
     public function create(): View
     {
-        return view('penggajian.create');
+        $jabatan = Jabatan::orderBy('nama_jabatan')->get();
+        return view('penggajian.create', compact('jabatan'));
     }
 
     /**
@@ -45,6 +48,7 @@ class EmployeeSalaryController extends Controller
             'usia' => ['required', 'integer', 'min:0'],
             'jenis_kelamin' => ['required', 'in:Laki-laki,Perempuan'],
             'gaji_per_bulan_rp' => ['required', 'integer', 'min:0'],
+            'id_jabatan' => ['nullable', 'integer', 'exists:data_jabatan,id_jabatan'],
         ]);
 
         EmployeeSalary::create($validated);
@@ -67,7 +71,8 @@ class EmployeeSalaryController extends Controller
      */
     public function edit(EmployeeSalary $employeeSalary): View
     {
-        return view('penggajian.edit', compact('employeeSalary'));
+        $jabatan = Jabatan::orderBy('nama_jabatan')->get();
+        return view('penggajian.edit', compact('employeeSalary', 'jabatan'));
     }
 
     /**
@@ -81,6 +86,7 @@ class EmployeeSalaryController extends Controller
             'usia' => ['required', 'integer', 'min:0'],
             'jenis_kelamin' => ['required', 'in:Laki-laki,Perempuan'],
             'gaji_per_bulan_rp' => ['required', 'integer', 'min:0'],
+            'id_jabatan' => ['nullable', 'integer', 'exists:data_jabatan,id_jabatan'],
         ]);
 
         $employeeSalary->update($validated);
