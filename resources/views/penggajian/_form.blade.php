@@ -40,7 +40,8 @@
     </div>
 
     <div class="col-md-6">
-        <label class="form-label">Gaji Per Bulan (Rp)</label>
+        <!-- <label class="form-label">Gaji Per Bulan (Rp)</label> -->
+        <label class="form-label">Gaji Pokok Dasar (Tanpa Bonus Pengalaman)</label>
         <input type="number" name="gaji_per_bulan_rp" class="form-control @error('gaji_per_bulan_rp') is-invalid @enderror" value="{{ old('gaji_per_bulan_rp', $employeeSalary->gaji_per_bulan_rp ?? '') }}" min="0" placeholder="Contoh: 5000000">
         @error('gaji_per_bulan_rp')
             <div class="invalid-feedback">{{ $message }}</div>
