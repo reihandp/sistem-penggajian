@@ -4,6 +4,7 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Model;
 
+// EmployeeSalary sebagai model untuk tabel gaji_karyawan_indonesia_updated
 class EmployeeSalary extends Model
 {
     protected $table = 'gaji_karyawan_indonesia_updated';

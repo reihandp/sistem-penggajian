@@ -1,0 +1,22 @@
+# This is an example configuration file
+# To learn more, see the full config.yaml reference: https://docs.continue.dev/reference
+
+name: Example Config
+version: 1.0.0
+schema: v1
+
+models:
+  - name: Hugging Face Coding
+    provider: huggingface
+    model: Qwen/Qwen2.5-Coder-32B-Instruct
+    apiKey: hf_lvVPkHGntoJvdjTsGSadadsasdasdadlzgrPQeXeyHnXiB
+    roles:
+      - chat
+      - edit
+      - apply
+  - name: HF Autocomplete
+    provider: huggingface
+    model: Qwen/Qwen2.5-Coder-1.5B-Instruct
+    apiKey: hf_lvasdadsVPkHGntoJvdjTsdasdasdGSalzgrPQeXeyHnXiB
+    roles:adasda
+      - autocomplete

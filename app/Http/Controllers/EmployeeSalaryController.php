@@ -13,6 +13,7 @@ class EmployeeSalaryController extends Controller
     /**
      * Display a listing of the resource.
      */
+    // Fungsi index untuk menampilkan daftar data gaji karyawan dengan fitur pencarian dan pagination.
     public function index(): View
     {
         $search = request('search');
@@ -31,6 +32,7 @@ class EmployeeSalaryController extends Controller
     /**
      * Show the form for creating a new resource.
      */
+    // Fungsi create untuk menampilkan form input data gaji karyawan baru.
     public function create(): View
     {
         $jabatan = Jabatan::orderBy('nama_jabatan')->get();
@@ -40,6 +42,7 @@ class EmployeeSalaryController extends Controller
     /**
      * Store a newly created resource in storage.
      */
+    // Fungsi store untuk menyimpan data gaji karyawan baru.
     public function store(Request $request): RedirectResponse
     {
         $validated = $request->validate([
@@ -61,6 +64,7 @@ class EmployeeSalaryController extends Controller
     /**
      * Display the specified resource.
      */
+    // Fungsi show untuk menampilkan detail data gaji karyawan.
     public function show(EmployeeSalary $employeeSalary)
     {
         return redirect()->route('penggajian.index');
@@ -69,6 +73,7 @@ class EmployeeSalaryController extends Controller
     /**
      * Show the form for editing the specified resource.
      */
+    // Fungsi edit untuk menampilkan form edit data gaji karyawan.
     public function edit(EmployeeSalary $employeeSalary): View
     {
         $jabatan = Jabatan::orderBy('nama_jabatan')->get();
@@ -78,6 +83,7 @@ class EmployeeSalaryController extends Controller
     /**
      * Update the specified resource in storage.
      */
+    // Fungsi update untuk memperbarui data gaji karyawan.
     public function update(Request $request, EmployeeSalary $employeeSalary): RedirectResponse
     {
         $validated = $request->validate([
@@ -99,6 +105,7 @@ class EmployeeSalaryController extends Controller
     /**
      * Remove the specified resource from storage.
      */
+    // Fungsi destroy untuk menghapus data gaji karyawan.
     public function destroy(EmployeeSalary $employeeSalary): RedirectResponse
     {
         EmployeeSalary::whereKey($employeeSalary->getKey())->delete();
@@ -111,6 +118,7 @@ class EmployeeSalaryController extends Controller
     /**
      * Display summary report page.
      */
+    // Fungsi laporan untuk menampilkan halaman laporan ringkasan data gaji karyawan.
     public function laporan(): View
     {
         $summary = [
