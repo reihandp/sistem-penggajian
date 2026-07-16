@@ -44,6 +44,7 @@ class AuthController extends Controller
     /**
      * Memproses logout (keluar sistem).
      */
+    // Ini adalah fungsi logout yang akan menghapus sesi pengguna dan mengarahkan kembali ke halaman login.
     public function logout(Request $request)
     {
         Auth::logout();
