@@ -7,18 +7,16 @@ use Illuminate\Support\Facades\Auth;
 
 class AuthController extends Controller
 {
-    /**
-     * Menampilkan halaman form login.
-     */
+    
+    // Halaman login
+    // Fungsi ini akan mengembalikan tampilan form login kepada pengguna.
     public function showLoginForm()
     {
         return view('auth.login');
     }
 
-    /**
-     * Memproses data login.
-     * MEMENUHI KUK: Menentukan keamanan dan hak akses pengguna
-     */
+    // Memproses data login
+    // Fungsi ini akan memvalidasi inputan dan memeriksa kecocokan data dengan database
     public function login(Request $request)
     {
         // Validasi inputan
@@ -41,10 +39,8 @@ class AuthController extends Controller
         ])->onlyInput('email');
     }
 
-    /**
-     * Memproses logout (keluar sistem).
-     */
-    // Ini adalah fungsi logout yang akan menghapus sesi pengguna dan mengarahkan kembali ke halaman login.
+    // Memproses logout
+    // Fungsi ini akan menghapus sesi pengguna dan mengarahkan kembali ke halaman login.
     public function logout(Request $request)
     {
         Auth::logout();
