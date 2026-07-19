@@ -21,7 +21,7 @@ class EmployeeSalaryController extends Controller
             $query->where('nama', 'like', $search . '%');
         })
             ->with('jabatan')
-            ->latest()
+            ->latest('id')
             ->paginate(10) // Pagination untuk menampilkan 10 data per halaman
             ->withQueryString();
 
@@ -56,7 +56,8 @@ class EmployeeSalaryController extends Controller
         // * Penghitungan total gaji dengan bonus berdasarkan pengalaman kerja
         $validated['gaji_per_bulan_rp'] = $this->hitungTotalGajiDenganBonus(
             $validated['gaji_per_bulan_rp'], 
-            $validated['pengalaman_kerja_tahun']
+            $validated['pengalaman_kerja_tahun'],
+            $validated['id_jabatan'] ?? null
         );
 
         // Transaksi database untuk menyimpan data gaji karyawan baru
@@ -83,22 +84,51 @@ class EmployeeSalaryController extends Controller
       - Bagian Edit dan Update Data Gaji Karyawan     
     --------------------------------------------------------------------*/
 
+    // // Fungsi untuk menampilkan form edit data gaji karyawan dengan penanganan bonus lama
+    // public function edit(EmployeeSalary $employeeSalary): View
+    // {
+    //     $jabatan = Jabatan::orderBy('nama_jabatan')->get();
+
+    //     // 1. REVERSE LOGIC: Kita hitung dulu bonus apa yang menempel pada data lama
+    //     $pengalaman = $employeeSalary->pengalaman_kerja_tahun;
+    //     $bonusLama = 0;
+        
+    //     // CEK: Hanya hitung bonusLama jika gaji di database memang lebih dari 0
+    //     if ($employeeSalary->gaji_per_bulan_rp > 0) {
+    //         if ($pengalaman >= 5) {
+    //             $bonusLama = 500000;
+    //         } elseif ($pengalaman >= 2) {
+    //             $bonusLama = 200000;
+    //         }
+    //     }
+
+    //     // Kurangi bonus lama dari gaji per bulan agar form edit menampilkan gaji pokok yang sebenarnya
+    //     $employeeSalary->gaji_per_bulan_rp = $employeeSalary->gaji_per_bulan_rp - $bonusLama;
+
+    //     // Validasi agar gaji pokok tidak menjadi negatif setelah dikurangi bonus lama
+    //     if ($employeeSalary->gaji_per_bulan_rp < 0) {
+    //         $employeeSalary->gaji_per_bulan_rp = 0;
+    //     }
+        
+    //     // Mengembalikan view edit dengan data gaji karyawan dan daftar jabatan
+    //     return view('penggajian.edit', compact('employeeSalary', 'jabatan'));
+    // }
+
     // Fungsi untuk menampilkan form edit data gaji karyawan dengan penanganan bonus lama
     public function edit(EmployeeSalary $employeeSalary): View
     {
         $jabatan = Jabatan::orderBy('nama_jabatan')->get();
 
-        // 1. REVERSE LOGIC: Kita hitung dulu bonus apa yang menempel pada data lama
-        $pengalaman = $employeeSalary->pengalaman_kerja_tahun;
         $bonusLama = 0;
         
         // CEK: Hanya hitung bonusLama jika gaji di database memang lebih dari 0
         if ($employeeSalary->gaji_per_bulan_rp > 0) {
-            if ($pengalaman >= 5) {
-                $bonusLama = 500000;
-            } elseif ($pengalaman >= 2) {
-                $bonusLama = 200000;
-            }
+            
+            // PANGGIL MESIN BONUS (Jangan tulis if-else manual lagi di sini!)
+            $bonusLama = $this->hitungBonus(
+                $employeeSalary->pengalaman_kerja_tahun, 
+                $employeeSalary->id_jabatan
+            );
         }
 
         // Kurangi bonus lama dari gaji per bulan agar form edit menampilkan gaji pokok yang sebenarnya
@@ -128,7 +158,8 @@ class EmployeeSalaryController extends Controller
         // * Penghitungan total gaji dengan bonus berdasarkan pengalaman kerja
         $validated['gaji_per_bulan_rp'] = $this->hitungTotalGajiDenganBonus(
             $validated['gaji_per_bulan_rp'], 
-            $validated['pengalaman_kerja_tahun']
+            $validated['pengalaman_kerja_tahun'],
+            $validated['id_jabatan'] ?? null
         );
 
         // Transaksi database untuk memperbarui data gaji karyawan
@@ -190,32 +221,99 @@ class EmployeeSalaryController extends Controller
         return view('penggajian.laporan', compact('summary'));
     }
 
+    // /**
+    //  * Algoritma penambahan bonus berdasarkan pengalaman kerja.
+    //  * * Berdasarkan Varian dan Invarian
+    //  *
+    //  * @param int $gajiPokok (Invarian)
+    //  * @param int $pengalaman (Varian)
+    //  * @return int Total Gaji
+    //  */
+
+    // private function hitungTotalGajiDenganBonus(int $gajiPokok, int $pengalaman): int
+    // {
+    //     // Jika gaji pokok kurang dari atau sama dengan 0, maka tidak ada bonus yang diberikan
+    //     if ($gajiPokok <= 0) {
+    //         return $gajiPokok;
+    //     }
+
+    //     $bonus = 0;
+        
+    //     // Logika menentukan bonus berdasarkan pengalaman kerja
+    //     if ($pengalaman >= 5) {
+    //         $bonus = 500000;
+    //     } elseif ($pengalaman >= 2) {
+    //         $bonus = 200000;
+    //     }
+
+    //     // Mengembalikan total gaji yang merupakan penjumlahan dari gaji pokok dan bonus
+    //     return $gajiPokok + $bonus;
+    // }
+
+    //---------------------------------------------------------------------
     /**
-     * Algoritma penambahan bonus berdasarkan pengalaman kerja.
-     * * Berdasarkan Varian dan Invarian
+     * Algoritma penambahan bonus berdasarkan jabatan dan pengalaman.
+     * MEMENUHI KUK: Menerapkan algoritma percabangan kompleks (Switch & If-Else)
      *
      * @param int $gajiPokok (Invarian)
-     * @param int $pengalaman (Varian)
-     * @return int Total Gaji
+     * @param int $pengalaman (Varian 1)
+     * @param int|null $idJabatan (Varian 2)
+     * @return int Total Gaji Akhir
      */
-
-    private function hitungTotalGajiDenganBonus(int $gajiPokok, int $pengalaman): int
+    private function hitungTotalGajiDenganBonus(int $gajiPokok, int $pengalaman, ?int $idJabatan): int
     {
-        // Jika gaji pokok kurang dari atau sama dengan 0, maka tidak ada bonus yang diberikan
+        // Early return: Jika gaji pokok 0, tolak proses bonus
         if ($gajiPokok <= 0) {
             return $gajiPokok;
         }
 
+        // Panggil mesin pemroses bonus
+        $bonus = $this->hitungBonus($pengalaman, $idJabatan);
+
+        return $gajiPokok + $bonus;
+    }
+
+    /**
+     * Mesin pemroses nominal bonus murni (Fungsi terpisah agar kode rapi / DRY)
+     */
+    private function hitungBonus(int $pengalaman, ?int $idJabatan): int
+    {
         $bonus = 0;
         
-        // Logika menentukan bonus berdasarkan pengalaman kerja
-        if ($pengalaman >= 5) {
-            $bonus = 500000;
-        } elseif ($pengalaman >= 2) {
-            $bonus = 200000;
+        // Jika belum ada jabatan, tidak dapat bonus jabatan
+        if (!$idJabatan) {
+            return 0;
         }
 
-        // Mengembalikan total gaji yang merupakan penjumlahan dari gaji pokok dan bonus
-        return $gajiPokok + $bonus;
+        // Logika Switch-Case berdasarkan ID Jabatan
+        switch ($idJabatan) {
+            case 1: // Manager
+                if ($pengalaman >= 10) $bonus = 2000000;
+                elseif ($pengalaman >= 5) $bonus = 1000000;
+                elseif ($pengalaman >= 2) $bonus = 500000;
+                break;
+            case 2: // Staff
+                if ($pengalaman >= 10) $bonus = 1000000;
+                elseif ($pengalaman >= 5) $bonus = 500000;
+                elseif ($pengalaman >= 2) $bonus = 200000;
+                break;
+            case 3: // Admin
+                if ($pengalaman >= 10) $bonus = 800000;
+                elseif ($pengalaman >= 5) $bonus = 400000;
+                elseif ($pengalaman >= 2) $bonus = 150000;
+                break;
+            case 4: // Supervisor
+                if ($pengalaman >= 10) $bonus = 1500000;
+                elseif ($pengalaman >= 5) $bonus = 750000;
+                elseif ($pengalaman >= 2) $bonus = 300000;
+                break;
+            case 5: // Direktur
+                if ($pengalaman >= 10) $bonus = 5000000;
+                elseif ($pengalaman >= 5) $bonus = 2500000;
+                elseif ($pengalaman >= 2) $bonus = 1000000;
+                break;
+        }
+
+        return $bonus;
     }
 }
