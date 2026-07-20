@@ -59,12 +59,12 @@ class User extends Authenticatable
     ];
 
     // ======================================================================
-    // 4. CASTING ATRIBUT
+    // 4. CASTING ATRIBUT 
     // ======================================================================
 
     /**
      * Mendefinisikan casting tipe data untuk atribut-atribut tertentu.
-     *
+     * 
      * @return array<string, string>
      */
     protected function casts(): array
