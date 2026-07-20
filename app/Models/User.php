@@ -8,13 +8,33 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Foundation\Auth\User as Authenticatable;
 use Illuminate\Notifications\Notifiable;
 
+/**
+ * Model untuk tabel users
+ * 
+ * @property int $id
+ * @property string $name
+ * @property string $email
+ * @property string $password
+ * @property string|null $remember_token
+ * @property \Illuminate\Support\Carbon|null $email_verified_at
+ * @property \Illuminate\Support\Carbon|null $created_at
+ * @property \Illuminate\Support\Carbon|null $updated_at
+ */
 class User extends Authenticatable
 {
+    // ======================================================================
+    // 1. TRAITS
+    // ======================================================================
+
     /** @use HasFactory<UserFactory> */
     use HasFactory, Notifiable;
 
+    // ======================================================================
+    // 2. KONFIGURASI MASS ASSIGNMENT
+    // ======================================================================
+
     /**
-     * The attributes that are mass assignable.
+     * Atribut-atribut yang diizinkan untuk diisi secara massal.
      *
      * @var list<string>
      */
@@ -24,8 +44,12 @@ class User extends Authenticatable
         'password',
     ];
 
+    // ======================================================================
+    // 3. KONFIGURASI HIDDEN ATTRIBUTES
+    // ======================================================================
+
     /**
-     * The attributes that should be hidden for serialization.
+     * Atribut-atribut yang harus disembunyikan saat serialisasi.
      *
      * @var list<string>
      */
@@ -34,8 +58,12 @@ class User extends Authenticatable
         'remember_token',
     ];
 
+    // ======================================================================
+    // 4. CASTING ATRIBUT
+    // ======================================================================
+
     /**
-     * Get the attributes that should be cast.
+     * Mendefinisikan casting tipe data untuk atribut-atribut tertentu.
      *
      * @return array<string, string>
      */

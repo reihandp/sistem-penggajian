@@ -6,47 +6,92 @@ use PHPUnit\Framework\TestCase;
 
 class SalaryCalculationTest extends TestCase
 {
+    // ======================================================================
+    // 1. SKENARIO UJI: BONUS BERDASARKAN PENGALAMAN
+    // ======================================================================
+
     /**
-     * Skenario 1: Menguji karyawan dengan gaji normal dan pengalaman > 2 tahun.
-     * MEMENUHI KUK: Melaksanakan pengujian unit program
+     * Skenario 1: Karyawan dengan pengalaman 3 tahun mendapatkan bonus Rp 200.000.
+     * MEMENUHI KUK: Melaksanakan pengujian unit program.
+     *
+     * @return void
      */
     public function test_karyawan_pengalaman_tiga_tahun_dapat_bonus_200rb()
     {
-        // 1. Persiapan Data (Arrange)
+        // ------------------------------------------------------------------
+        // 1.1. Persiapan Data (Arrange)
+        // ------------------------------------------------------------------
+
         $gajiPokok = 5000000;
         $pengalaman = 3;
-        
-        // 2. Eksekusi Logika Algoritma (Act)
+
+        // ------------------------------------------------------------------
+        // 1.2. Eksekusi Logika (Act)
+        // ------------------------------------------------------------------
+
         $totalGaji = $this->simulasiHitungGaji($gajiPokok, $pengalaman);
 
-        // 3. Pembuktian (Assert)
-        // Kita berekspektasi hasilnya harus 5.200.000
+        // ------------------------------------------------------------------
+        // 1.3. Verifikasi Hasil (Assert)
+        // ------------------------------------------------------------------
+
+        // Ekspektasi: gaji pokok + bonus Rp 200.000 = Rp 5.200.000
         $this->assertEquals(5200000, $totalGaji);
     }
 
+    // ======================================================================
+    // 2. SKENARIO UJI: ANOMALI GAJI NOL
+    // ======================================================================
+
     /**
-     * Skenario 2: Menguji anomali gaji 0 (Trik Debugging kita sebelumnya).
+     * Skenario 2: Karyawan dengan gaji pokok 0 tidak mendapatkan bonus,
+     * meskipun pengalaman kerja tinggi.
+     *
+     * @return void
      */
     public function test_karyawan_gaji_nol_tidak_dapat_bonus()
     {
+        // ------------------------------------------------------------------
+        // 2.1. Persiapan Data (Arrange)
+        // ------------------------------------------------------------------
+
         $gajiPokok = 0;
-        $pengalaman = 10; // Walau pengalaman 10 tahun, karena gajinya 0 harusnya tidak dapat bonus
-        
+        $pengalaman = 10; // Pengalaman tinggi, tetapi gaji pokok 0
+
+        // ------------------------------------------------------------------
+        // 2.2. Eksekusi Logika (Act)
+        // ------------------------------------------------------------------
+
         $totalGaji = $this->simulasiHitungGaji($gajiPokok, $pengalaman);
 
-        // Kita berekspektasi hasilnya tetap 0
+        // ------------------------------------------------------------------
+        // 2.3. Verifikasi Hasil (Assert)
+        // ------------------------------------------------------------------
+
+        // Ekspektasi: tetap 0 (bonus tidak diberikan karena gaji pokok <= 0)
         $this->assertEquals(0, $totalGaji);
     }
 
+    // ======================================================================
+    // 3. FUNGSI PEMBANTU UNTUK SIMULASI
+    // ======================================================================
+
     /**
-     * Fungsi duplikat dari Controller untuk simulasi tes (Isolasi Unit).
+     * Fungsi simulasi perhitungan gaji (duplikat dari Controller)
+     * untuk keperluan pengujian unit secara terisolasi.
+     *
+     * @param int $gajiPokok
+     * @param int $pengalaman
+     * @return int Total gaji setelah bonus
      */
     private function simulasiHitungGaji($gajiPokok, $pengalaman)
     {
+        // Jika gaji pokok <= 0, tolak semua bonus
         if ($gajiPokok <= 0) {
             return $gajiPokok;
         }
 
+        // Hitung bonus berdasarkan pengalaman kerja
         $bonus = 0;
         if ($pengalaman >= 5) {
             $bonus = 500000;

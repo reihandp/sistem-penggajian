@@ -7,46 +7,73 @@ use Illuminate\Support\Facades\Auth;
 
 class AuthController extends Controller
 {
-    
-    // Halaman login
-    // Fungsi ini akan mengembalikan tampilan form login kepada pengguna.
+    // ======================================================================
+    // 1. HALAMAN LOGIN
+    // ======================================================================
+
+    /**
+     * Menampilkan form login kepada pengguna.
+     *
+     * @return View
+     */
     public function showLoginForm()
     {
         return view('auth.login');
     }
 
-    // Memproses data login
-    // Fungsi ini akan memvalidasi inputan dan memeriksa kecocokan data dengan database
+    // ======================================================================
+    // 2. PROSES LOGIN
+    // ======================================================================
+
+    /**
+     * Memproses data login dengan validasi dan autentikasi.
+     *
+     * @param Request $request
+     * @return RedirectResponse
+     */
     public function login(Request $request)
     {
-        // Validasi inputan
+        // Validasi input dari form login
         $credentials = $request->validate([
             'email' => ['required', 'email'],
             'password' => ['required'],
         ]);
 
-        // Cek kecocokan data dengan database
+        // Cek kecocokan kredensial dengan database
         if (Auth::attempt($credentials)) {
+            // Regenerasi session untuk keamanan
             $request->session()->regenerate();
-            
-            // Arahkan ke halaman dashboard penggajian jika sukses
+
+            // Arahkan ke halaman dashboard penggajian
             return redirect()->intended(route('penggajian.index'));
         }
 
-        // Jika gagal, kembalikan ke form dengan pesan error
+        // Jika autentikasi gagal, kembalikan ke form dengan pesan error
         return back()->withErrors([
             'email' => 'Email atau password yang Anda masukkan salah.',
         ])->onlyInput('email');
     }
 
-    // Memproses logout
-    // Fungsi ini akan menghapus sesi pengguna dan mengarahkan kembali ke halaman login.
+    // ======================================================================
+    // 3. PROSES LOGOUT
+    // ======================================================================
+
+    /**
+     * Memproses logout dengan menghapus sesi pengguna.
+     *
+     * @param Request $request
+     * @return RedirectResponse
+     */
     public function logout(Request $request)
     {
+        // Logout pengguna
         Auth::logout();
+
+        // Invalidasi session dan regenerate token
         $request->session()->invalidate();
         $request->session()->regenerateToken();
-        
+
+        // Redirect ke halaman login
         return redirect('/login');
     }
 }
