@@ -12,7 +12,7 @@ class SalaryCalculationTest extends TestCase
 
     /**
      * Skenario 1: Karyawan dengan pengalaman 3 tahun mendapatkan bonus Rp 200.000.
-     * MEMENUHI KUK: Melaksanakan pengujian unit program.
+     * Melaksanakan pengujian unit program.
      *
      * @return void
      */
