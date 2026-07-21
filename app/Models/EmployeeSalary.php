@@ -19,3 +19,5 @@ class EmployeeSalary extends Model
         return $this->belongsTo(Jabatan::class, 'id_jabatan', 'id_jabatan');
     }
 }
+
+// asdlasdjlahsld
