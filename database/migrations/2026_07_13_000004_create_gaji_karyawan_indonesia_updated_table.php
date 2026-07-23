@@ -56,13 +56,13 @@ return new class extends Migration
         // ------------------------------------------------------------------
         // 1.2. Membuat View, Stored Procedure, dan Trigger
         // ------------------------------------------------------------------
-        // MEMENUHI KUK: SQL DML, Stored Procedure, Trigger, dan View
+        // Memenuhi SQL DML, Stored Procedure, Trigger, dan View
 
         DB::unprepared("
             -- ================================================================
             -- VIEW: Rekap Data Gaji Karyawan
             -- ================================================================
-            CREATE VIEW view_rekap_gaji_karyawan AS
+            CREATE OR REPLACE VIEW view_rekap_gaji_karyawan AS
             SELECT
                 a.nama,
                 a.gaji_per_bulan_rp,
@@ -73,6 +73,8 @@ return new class extends Migration
             -- ================================================================
             -- STORED PROCEDURE: Total Beban Gaji
             -- ================================================================
+            DROP PROCEDURE IF EXISTS GetTotalGaji;
+
             CREATE PROCEDURE GetTotalGaji()
             BEGIN
                 SELECT SUM(gaji_per_bulan_rp) as total_beban_gaji
@@ -82,6 +84,8 @@ return new class extends Migration
             -- ================================================================
             -- TRIGGER: Mencegah Nilai Gaji Negatif (sebelum INSERT)
             -- ================================================================
+            DROP TRIGGER IF EXISTS trg_cek_gaji_minus;
+            
             CREATE TRIGGER trg_cek_gaji_minus BEFORE INSERT ON gaji_karyawan_indonesia_updated
             FOR EACH ROW
             BEGIN

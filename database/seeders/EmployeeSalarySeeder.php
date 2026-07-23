@@ -2,7 +2,6 @@
 
 namespace Database\Seeders;
 
-use App\Models\EmployeeSalary;
 use Illuminate\Database\Seeder;
 use Illuminate\Support\Facades\DB;
 
@@ -23,12 +22,11 @@ class EmployeeSalarySeeder extends Seeder
         // 1.1. Menentukan Path File CSV
         // ------------------------------------------------------------------
 
-        // Format CSV: (ID,Nama,Pengalaman_Kerja_Tahun,Usia,Jenis_Kelamin,Gaji_Per_Bulan_Rp,id_jabatan)
         $csvPath = database_path('seeders/gaji_karyawan_indonesia_updated.csv');
 
         // Fallback ke nama file lama jika file dengan nama baru tidak ditemukan
         if (!file_exists($csvPath)) {
-            $csvPath = database_path('seeders/Gaji_Karyawan_Indonesia.csv');
+            $csvPath = database_path('seeders/data_gaji_karyawan.csv');
         }
 
         // ------------------------------------------------------------------
@@ -41,8 +39,8 @@ class EmployeeSalarySeeder extends Seeder
         while (($data = fgetcsv($csvFile, 2000, ',')) !== false) {
             // Lewati baris pertama (header)
             if (!$firstRow) {
+                
                 // Insert data ke tabel menggunakan DB facade
-                // (memungkinkan explicit ID dari CSV jika ada)
                 DB::table('gaji_karyawan_indonesia_updated')->insert([
                     // Kolom 0: ID (nullable)
                     'id' => isset($data[0]) && is_numeric($data[0]) ? (int) $data[0] : null,
@@ -62,8 +60,9 @@ class EmployeeSalarySeeder extends Seeder
                     // Kolom 5: Gaji Per Bulan (Rp)
                     'gaji_per_bulan_rp' => isset($data[5]) ? (int) $data[5] : null,
 
-                    // Kolom 6: ID Jabatan (nullable, kosongkan jika tidak ada)
-                    'id_jabatan' => isset($data[6]) && $data[6] !== '' ? (int) $data[6] : null,
+                    // Kolom 7: ID Jabatan (nullable, kosongkan jika tidak ada)
+                    // Jika di CSV Anda tidak ada kolom jabatan, kita fallback ke random 1-5 agar data jabatan terisi
+                    'id_jabatan' => isset($data[7]) && $data[7] !== '' ? (int) $data[7] : rand(1, 5),
 
                     // Timestamp
                     'created_at' => now(),
@@ -78,3 +77,4 @@ class EmployeeSalarySeeder extends Seeder
         fclose($csvFile);
     }
 }
+
