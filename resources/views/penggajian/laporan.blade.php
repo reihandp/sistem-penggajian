@@ -5,7 +5,7 @@
 @section('content')
     <div class="mb-4">
         <h4 class="mb-1 fw-bold">Laporan Penggajian</h4>
-        <p class="text-muted mb-0">Ringkasan data gaji karyawan berdasarkan data yang tersimpan.</p>
+        <p class="text-muted mb-0">Ringkasan laporan gaji karyawan berdasarkan data yang tersimpan.</p>
     </div>
 
     <div class="row g-3 g-md-4">
