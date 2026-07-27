@@ -4,10 +4,10 @@ namespace App\Http\Controllers;
 
 use App\Models\EmployeeSalary;
 use App\Models\Jabatan;
-use Illuminate\Http\Request;
-use Illuminate\Http\RedirectResponse;
-use Illuminate\View\View;
-use Illuminate\Support\Facades\DB;
+use Illuminate\Http\Request; //  Fungsi untuk menangani data HTTP (GET, POST, PUT, DELETE)
+use Illuminate\Http\RedirectResponse; // Fungsi ini akan mengembalikan respons pengalihan (redirect) ke halaman lain.
+use Illuminate\View\View; // Fungsi ini akan mengembalikan respons tampilan (view) file Blade 
+use Illuminate\Support\Facades\DB; // Fungsi ini digunakan untuk melakukan operasi database secara langsung (raw SQL) dan transaksi database.
 use Exception;
 
 class EmployeeSalaryController extends Controller
