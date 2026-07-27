@@ -61,7 +61,7 @@ class EmployeeSalarySeeder extends Seeder
                     'gaji_per_bulan_rp' => isset($data[5]) ? (int) $data[5] : null,
 
                     // Kolom 7: ID Jabatan (nullable, kosongkan jika tidak ada)
-                    // Jika di CSV Anda tidak ada kolom jabatan, kita fallback ke random 1-5 agar data jabatan terisi
+                    // Jika di CSV tidak ada kolom jabatan, akan fallback ke random 1-5 agar data jabatan terisi
                     'id_jabatan' => isset($data[7]) && $data[7] !== '' ? (int) $data[7] : rand(1, 5),
 
                     // Timestamp
