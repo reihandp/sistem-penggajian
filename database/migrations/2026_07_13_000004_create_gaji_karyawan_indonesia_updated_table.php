@@ -28,7 +28,7 @@ return new class extends Migration
             $table->id();
 
             // Kolom data karyawan
-            $table->string('nama')->index(); // MEMENUHI KUK: Membangkitkan Indeks
+            $table->string('nama')->index(); // Membuat: Membangkitkan Indeks
 
             // Kolom pengalaman dan usia
             $table->integer('pengalaman_kerja_tahun');
